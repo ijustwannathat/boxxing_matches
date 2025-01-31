@@ -1,9 +1,9 @@
 from rest_framework import generics
 
-from .models import Boxer, BoxerMatch, Match
-from .serializers import BoxerMatchSerializer, BoxerSerializer, MatchSerializer
+from .models import Boxer, Match, MatchResult
+from .serializers import BoxerSerializer, MatchResultSerializer, MatchSerializer
 
-print('hello', "data")
+
 class BoxerView(generics.ListCreateAPIView):
     queryset = Boxer.objects.all()
     serializer_class = BoxerSerializer
@@ -14,18 +14,6 @@ class BoxerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Boxer.objects.all()
     serializer_class = BoxerSerializer
     name = "boxer-detail"
-
-
-class BoxerMatchView(generics.ListCreateAPIView):
-    queryset = BoxerMatch.objects.all()
-    serializer_class = BoxerMatchSerializer
-    name = "boxer-match"
-
-
-class BoxerMatchDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BoxerMatch.objects.all()
-    serializer_class = BoxerMatchSerializer
-    name = "boxer-match-detail"
 
 
 class MatchView(generics.ListCreateAPIView):
@@ -40,8 +28,13 @@ class MatchDetailView(generics.RetrieveUpdateDestroyAPIView):
     name = "match-detail"
 
 
+class MatchResultView(generics.ListCreateAPIView):
+    queryset = MatchResult.objects.all()
+    serializer_class = MatchResultSerializer
+    name = "match-result"
 
-class MatchView(generics.ListCreateAPIView):
-    queryset = Match.objects.all()
-    serializer_class = MatchSerializer
-    name = "match"
+
+class MatchResultDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MatchResult.objects.all()
+    serializer_class = MatchResultSerializer
+    name = "match-result-detail"

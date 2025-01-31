@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from .models import Boxer, BoxerMatch, Match, Rounds
-from .weight_category import define_weight_category
+from .models import Boxer, Match, MatchResult, Round
 
 
 class BoxerSerializer(serializers.ModelSerializer):
@@ -21,24 +20,20 @@ class BoxerSerializer(serializers.ModelSerializer):
         read_only_fields = ("weight_category",)
 
 
-class RoundsSerializer(serializers.ModelSerializer):
+class RoundSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rounds
+        model = Round
         fields = "__all__"
 
 
-class BoxerMatchSerializer(serializers.ModelSerializer):
-    total_rounds = RoundsSerializer(many=False, read_only=False)
-
-    class Meta:
-        model = BoxerMatch
-        fields = ("total_rounds", "boxer")
-
-
 class MatchSerializer(serializers.ModelSerializer):
-    boxer_1 = BoxerMatchSerializer(many=False, read_only=True)
-    boxer_2 = BoxerMatchSerializer(many=False, read_only=True)
-
     class Meta:
         model = Match
-        fields = ("boxer_1", "boxer_2")
+        fields = "__all__"
+
+
+class MatchResultSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MatchResult
+        fields = "__all__"

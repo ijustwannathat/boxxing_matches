@@ -15,37 +15,70 @@ class Boxer(models.Model):
     fights_lost = models.PositiveSmallIntegerField(default=0)
     fights_tied = models.PositiveSmallIntegerField(default=0)
     fights_played = models.PositiveSmallIntegerField(default=0)
-    weight_category = models.CharField(
-        max_length=120, default="Lightweight", blank=True, editable=False
-    )
+    weight_category = models.CharField(max_length=120, blank=True, editable=False)
 
     def save(self, *args, **kwargs):
         self.weight_category = define_weight_category(self.weight)
         super(Boxer, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
-
-
-class Rounds(models.Model):
-    round = models.PositiveSmallIntegerField(default=0)
-
-
-class BoxerMatch(models.Model):
-    boxer = models.ForeignKey(
-        Boxer,
-        related_name="contestant",
-        on_delete=models.CASCADE,
-    )
-    total_rounds = models.ForeignKey(
-        Rounds, related_name="total_rounds", on_delete=models.CASCADE
-    )
+        return f"{self.name} {self.weight_category}"
 
 
 class Match(models.Model):
     boxer_1 = models.ForeignKey(
-        BoxerMatch, related_name="first_contestant", on_delete=models.CASCADE
+        Boxer,
+        on_delete=models.CASCADE,
+        related_name="match_boxer_1",
     )
     boxer_2 = models.ForeignKey(
-        BoxerMatch, related_name="second_contestant", on_delete=models.CASCADE
+        Boxer,
+        on_delete=models.CASCADE,
+        related_name="match_boxer_2",
     )
+    location = models.CharField(max_length=255, blank=True, null=True)
+    total_rounds = models.PositiveSmallIntegerField(default=4)
+    winner = models.ForeignKey(
+        Boxer, on_delete=models.SET_NULL, blank=True, null=True, related_name="wins"
+    )
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Match: {self.boxer_1.name} vs {self.boxer_2.name} - {self.date.strftime('%Y:%m:%d')}"
+
+
+class Round(models.Model):
+    match = models.OneToOneField(
+        Match, on_delete=models.CASCADE, related_name="round_number"
+    )
+    winner = models.ForeignKey(
+        Boxer, on_delete=models.SET_NULL, related_name="winner", blank=True, null=True
+    )
+    round_number = models.PositiveSmallIntegerField(default=4)
+    first_boxer_score = models.PositiveSmallIntegerField(default=0)
+    second_boxer_score = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        unique_together = ("match", "round_number")
+
+    def __str__(self):
+        return f"Round {self.round_number}: {self.match.boxer_1.name} vs {self.match.boxer_2.name}"
+
+
+class MatchResult(models.Model):
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    winner = models.ForeignKey(Boxer, on_delete=models.CASCADE, blank=True, null=True)
+    total_rounds = models.PositiveSmallIntegerField(default=0)
+    win_choices = (
+        ("KO", "Knockout"),
+        ("TKO", "Technical Knockout"),
+        ("UD", "Unanonimous Decision"),
+        ("SD", "Split Decision"),
+        ("MD", "Majority Decision"),
+        ("Draw", "Draw"),
+        ("NC", "No Contest"),
+    )
+    win_method = models.CharField(max_length=50, choices=win_choices, blank=True)
+
+    def __str__(self):
+        return f"Winner: {self.winner.name}"
