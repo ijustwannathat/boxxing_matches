@@ -27,9 +27,20 @@ class RoundSerializer(serializers.ModelSerializer):
 
 
 class MatchSerializer(serializers.ModelSerializer):
+
+    rounds = RoundSerializer(many=True, read_only=True)
+
     class Meta:
         model = Match
-        fields = "__all__"
+        fields = [
+            "boxer_1",
+            "boxer_2",
+            "location",
+            "total_rounds",
+            "winner",
+            "date",
+            "rounds",
+        ]
 
 
 class MatchResultSerializer(serializers.ModelSerializer):

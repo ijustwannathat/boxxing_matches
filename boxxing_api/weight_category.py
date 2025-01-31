@@ -29,6 +29,12 @@ dictionary = {
     (101.6, 300): "Heavyweight",
 }
 
+"""
+NOTE:
+    This code is bad and will/must be REWRITTEN
+    But for testing purpose i left it hanging.
+"""
+
 
 def define_weight_category(weight):
     for values, key in dictionary.items():
