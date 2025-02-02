@@ -47,38 +47,23 @@ class Match(models.Model):
         return f"Match: {self.boxer_1.name} vs {self.boxer_2.name} - {self.date.strftime('%Y:%m:%d')}"
 
 
-class Round(models.Model):
-    match = models.OneToOneField(
-        Match, on_delete=models.CASCADE, related_name="round_number"
-    )
-    winner = models.ForeignKey(
-        Boxer, on_delete=models.SET_NULL, related_name="winner", blank=True, null=True
-    )
-    round_number = models.PositiveSmallIntegerField(default=4)
-    first_boxer_score = models.PositiveSmallIntegerField(default=0)
-    second_boxer_score = models.PositiveSmallIntegerField(default=0)
-
-    class Meta:
-        unique_together = ("match", "round_number")
-
-    def __str__(self):
-        return f"Round {self.round_number}: {self.match.boxer_1.name} vs {self.match.boxer_2.name}"
-
-
 class MatchResult(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    winner = models.ForeignKey(Boxer, on_delete=models.CASCADE, blank=True, null=True)
-    total_rounds = models.PositiveSmallIntegerField(default=0)
-    win_choices = (
-        ("KO", "Knockout"),
-        ("TKO", "Technical Knockout"),
-        ("UD", "Unanonimous Decision"),
-        ("SD", "Split Decision"),
-        ("MD", "Majority Decision"),
-        ("Draw", "Draw"),
-        ("NC", "No Contest"),
-    )
-    win_method = models.CharField(max_length=50, choices=win_choices, blank=True)
+    boxer_1 = models.ForeignKey(Boxer, on_delete=models.CASCADE)
+    boxer_2 = models.ForeignKey(Boxer, on_delete=models.CASCADE)
+
+
+class BoxerPerformance(models.Model):
+    match_result = models.ForeignKey(MatchResult, on_delete=models.CASCADE)
+    boxer = models.ForeignKey(Boxer, on_delete=models.CASCADE)
+    total_punces = models.PositiveSmallIntegerField()
+    punch_accuracy = models.DecimalField(max_digits=5, decimal_places=2)
+    knockdowns = models.PositiveSmallIntegerField()
+    rounds_won = models.PositiveSmallIntegerField()
+    total_defense = models.PositiveSmallIntegerField()
+
+    # def save(self, *args, **kwargs):
+    #     self.punch_accuracy = ...
 
     def __str__(self):
-        return f"Winner: {self.winner.name}"
+        return f"{self.boxer.name.capitalize()} performance in a match"
