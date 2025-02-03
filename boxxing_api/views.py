@@ -1,40 +1,24 @@
-from rest_framework import generics
+from rest_framework import viewsets
 
-from .models import Boxer, Match, MatchResult
-from .serializers import BoxerSerializer, MatchResultSerializer, MatchSerializer
+from .models import Boxer, BoxerPerformance, Match, MatchResult
+from .serializers import (
+    BoxerPerformanceSerializer,
+    BoxerSerializer,
+    MatchResultSerializer,
+    MatchSerializer,
+)
 
 
-class BoxerView(generics.ListCreateAPIView):
+class BoxerViewSet(viewsets.ModelViewSet):
     queryset = Boxer.objects.all()
     serializer_class = BoxerSerializer
-    name = "boxer"
 
 
-class BoxerDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Boxer.objects.all()
-    serializer_class = BoxerSerializer
-    name = "boxer-detail"
-
-
-class MatchView(generics.ListCreateAPIView):
+class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
-    name = "match"
 
 
-class MatchDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Match.objects.all()
-    serializer_class = MatchSerializer
-    name = "match-detail"
-
-
-class MatchResultView(generics.ListCreateAPIView):
+class MatchResultViewSet(viewsets.ModelViewSet):
     queryset = MatchResult.objects.all()
     serializer_class = MatchResultSerializer
-    name = "match-result"
-
-
-class MatchResultDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = MatchResult.objects.all()
-    serializer_class = MatchResultSerializer
-    name = "match-result-detail"

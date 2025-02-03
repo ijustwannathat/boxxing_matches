@@ -48,9 +48,23 @@ class Match(models.Model):
 
 
 class MatchResult(models.Model):
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    boxer_1 = models.ForeignKey(Boxer, on_delete=models.CASCADE)
-    boxer_2 = models.ForeignKey(Boxer, on_delete=models.CASCADE)
+    match = models.OneToOneField(Match, on_delete=models.CASCADE)
+    boxer = models.ForeignKey(
+        Boxer, on_delete=models.CASCADE, related_name="match_results"
+    )
+    winner = models.ForeignKey(
+        Boxer,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="match_victories",
+    )
+    knockout_round = models.PositiveSmallIntegerField(default=0)
+    first_boxer_score = models.PositiveSmallIntegerField()
+    second_boxer_score = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"Match {self.match} ends with winner: \n Boxer {self.boxer.name} {self.boxer.second_name}"
 
 
 class BoxerPerformance(models.Model):
@@ -64,6 +78,5 @@ class BoxerPerformance(models.Model):
 
     # def save(self, *args, **kwargs):
     #     self.punch_accuracy = ...
-
     def __str__(self):
         return f"{self.boxer.name.capitalize()} performance in a match"
