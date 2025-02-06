@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Boxer, BoxerPerformance, Match, MatchResult
+from .models import Boxer, Match, MatchResult
 
 
 class BoxerSerializer(serializers.ModelSerializer):
@@ -8,6 +8,7 @@ class BoxerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Boxer
         fields = (
+            "id",
             "name",
             "second_name",
             "age",
@@ -20,43 +21,35 @@ class BoxerSerializer(serializers.ModelSerializer):
         read_only_fields = ("weight_category",)
 
 
-class MatchSerializer(serializers.ModelSerializer):
-    match_result_url = serializers.HyperlinkedRelatedField(
-        view_name="matchresult-detail",
-        read_only=True,
-        lookup_field="pk",
-        source="matchresult",
-    )
-
+class BoxerResultSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Match
-        fields = (
-            "id",
-            "location",
-            "total_rounds",
-            "date",
-            "boxer_1",
-            "boxer_2",
-            "winner",
-            "match_result_url",
-        )
+        model = Boxer
+        fields = ("id", "name", "second_name")
 
 
-class MatchResultSerializer(serializers.HyperlinkedModelSerializer):
-    match = MatchSerializer(read_only=True)
+class MatchResultSerializer(serializers.ModelSerializer):
+    boxer = BoxerResultSerializer()
 
     class Meta:
         model = MatchResult
         fields = "__all__"
 
 
-class BoxerPerformanceSerializer(serializers.ModelSerializer):
-    match_result = MatchResultSerializer(many=True)
+class MatchSerializer(serializers.ModelSerializer):
+    boxer_1 = BoxerSerializer()
+    boxer_2 = BoxerSerializer()
+    match_results = MatchResultSerializer(many=True, read_only=True)
 
     class Meta:
-        model = BoxerPerformance
-        fields = "__all__"
-
-    def get_boxer_performances(self, match):
-        perormances = BoxerPerformance.objects.filter(match_result__match=match)
-        return BoxerPerformance(perormances, many=True).data
+        model = Match
+        fields = [
+            "id",
+            "boxer_1",
+            "boxer_2",
+            "location",
+            "total_rounds",
+            "date",
+            "match_results",
+            "winner",
+            "win_method",
+        ]

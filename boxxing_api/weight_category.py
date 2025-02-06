@@ -45,17 +45,5 @@ def define_weight_category(weight):
                 return "String type is not (int, float)"
             case _ if weight > 300:
                 return "Weight is overestimated"
-
-
-#
-# win_choices = (
-#     ("KO", "Knockout"),
-#     ("TKO", "Technical Knockout"),
-#     ("UD", "Unanonimous Decision"),
-#     ("SD", "Split Decision"),
-#     ("MD", "Majority Decision"),
-#     ("Draw", "Draw"),
-#     ("NC", "No Contest"),
-# )
-# win_method = models.CharField(max_length=50, choices=win_choices, blank=True)
-#
+            case _ if weight < 48:
+                return "Weight can't be zero"

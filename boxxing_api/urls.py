@@ -5,9 +5,7 @@ from . import views
 
 router = DefaultRouter()
 
-router.register("boxers", views.BoxerViewSet)
-router.register("matches", views.MatchViewSet)
-router.register("match-results", views.MatchResultViewSet)
-
+router.register("boxers", views.BoxerViewSet, basename="boxers")
+router.register("matches", views.MatchViewSet, basename="matches")
 
 urlpatterns = [path("", include(router.urls))]

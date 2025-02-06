@@ -1,12 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Boxer, BoxerPerformance, Match, MatchResult
-from .serializers import (
-    BoxerPerformanceSerializer,
-    BoxerSerializer,
-    MatchResultSerializer,
-    MatchSerializer,
-)
+from .models import Boxer, Match
+from .serializers import BoxerSerializer, MatchSerializer
 
 
 class BoxerViewSet(viewsets.ModelViewSet):
@@ -17,8 +12,3 @@ class BoxerViewSet(viewsets.ModelViewSet):
 class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
-
-
-class MatchResultViewSet(viewsets.ModelViewSet):
-    queryset = MatchResult.objects.all()
-    serializer_class = MatchResultSerializer

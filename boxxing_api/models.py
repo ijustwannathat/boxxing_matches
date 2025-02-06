@@ -22,7 +22,7 @@ class Boxer(models.Model):
         super(Boxer, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} {self.weight_category}"
+        return f"{self.name} {self.second_name}"
 
 
 class Match(models.Model):
@@ -41,6 +41,18 @@ class Match(models.Model):
     winner = models.ForeignKey(
         Boxer, on_delete=models.SET_NULL, blank=True, null=True, related_name="wins"
     )
+
+    win_choices = (
+        ("KO", "Knockout"),
+        ("TKO", "Technical Knockout"),
+        ("UD", "Unanonimous Decision"),
+        ("SD", "Split Decision"),
+        ("MD", "Majority Decision"),
+        ("Draw", "Draw"),
+        ("NC", "No Contest"),
+    )
+    win_method = models.CharField(max_length=50, choices=win_choices, blank=True)
+
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -48,35 +60,15 @@ class Match(models.Model):
 
 
 class MatchResult(models.Model):
-    match = models.OneToOneField(Match, on_delete=models.CASCADE)
-    boxer = models.ForeignKey(
-        Boxer, on_delete=models.CASCADE, related_name="match_results"
+    match = models.ForeignKey(
+        Match, on_delete=models.CASCADE, related_name="match_results"
     )
-    winner = models.ForeignKey(
-        Boxer,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="match_victories",
-    )
-    knockout_round = models.PositiveSmallIntegerField(default=0)
-    first_boxer_score = models.PositiveSmallIntegerField()
-    second_boxer_score = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return f"Match {self.match} ends with winner: \n Boxer {self.boxer.name} {self.boxer.second_name}"
-
-
-class BoxerPerformance(models.Model):
-    match_result = models.ForeignKey(MatchResult, on_delete=models.CASCADE)
     boxer = models.ForeignKey(Boxer, on_delete=models.CASCADE)
-    total_punces = models.PositiveSmallIntegerField()
-    punch_accuracy = models.DecimalField(max_digits=5, decimal_places=2)
-    knockdowns = models.PositiveSmallIntegerField()
-    rounds_won = models.PositiveSmallIntegerField()
-    total_defense = models.PositiveSmallIntegerField()
+    total_punces = models.PositiveSmallIntegerField(default=0)
+    punch_accuracy = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    knockdowns = models.PositiveSmallIntegerField(default=0)
+    rounds_won = models.PositiveSmallIntegerField(default=0)
+    total_defense = models.PositiveSmallIntegerField(default=0)
 
-    # def save(self, *args, **kwargs):
-    #     self.punch_accuracy = ...
     def __str__(self):
-        return f"{self.boxer.name.capitalize()} performance in a match"
+        return f"Match result for {self.boxer} in weight cateogry {self.boxer.weight_category}"
