@@ -1,6 +1,5 @@
 ### Website for storing boxxing matches and results based on them 
 ---
-## >>>
+## Documentation will be included later, hereby making it reasonable and stable 
 ---
-## NOTE: This branch is used for testing only, any changes here most likely won't be merged with original branch
 
