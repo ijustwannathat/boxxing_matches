@@ -17,8 +17,9 @@ class BoxerSerializer(serializers.ModelSerializer):
             "fights_won",
             "fights_lost",
             "weight_category",
+            "fights_played",
         )
-        read_only_fields = ("weight_category",)
+        read_only_fields = ("weight_category", "fights_played")
 
 
 class BoxerResultSerializer(serializers.ModelSerializer):
@@ -33,6 +34,7 @@ class MatchResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchResult
         fields = "__all__"
+        order = ("match",)
 
 
 class MatchSerializer(serializers.ModelSerializer):

@@ -14,11 +14,12 @@ class Boxer(models.Model):
     fights_won = models.PositiveSmallIntegerField(default=0)
     fights_lost = models.PositiveSmallIntegerField(default=0)
     fights_tied = models.PositiveSmallIntegerField(default=0)
-    fights_played = models.PositiveSmallIntegerField(default=0)
+    fights_played = models.PositiveSmallIntegerField(default=0, editable=False)
     weight_category = models.CharField(max_length=120, blank=True, editable=False)
 
     def save(self, *args, **kwargs):
         self.weight_category = define_weight_category(self.weight)
+        self.fights_played = self.fights_won + self.fights_lost + self.fights_tied
         super(Boxer, self).save(*args, **kwargs)
 
     def __str__(self):
