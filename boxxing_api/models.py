@@ -22,9 +22,6 @@ class Boxer(models.Model):
         self.fights_played = self.fights_won + self.fights_lost + self.fights_tied
         super(Boxer, self).save(*args, **kwargs)
 
-    def get_full_name(self):
-        return f"{self.name} {self.second_name}, {self.id}"
-
     def __str__(self):
         return f"{self.name} {self.second_name}"
 
