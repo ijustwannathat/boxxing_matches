@@ -22,27 +22,26 @@ class Boxer(models.Model):
         self.fights_played = self.fights_won + self.fights_lost + self.fights_tied
         super(Boxer, self).save(*args, **kwargs)
 
+    def get_full_name(self):
+        return f"{self.name} {self.second_name}, {self.id}"
+
     def __str__(self):
         return f"{self.name} {self.second_name}"
 
 
 class Match(models.Model):
     boxer_1 = models.ForeignKey(
-        Boxer,
-        on_delete=models.CASCADE,
-        related_name="match_boxer_1",
+        Boxer, on_delete=models.CASCADE, related_name="match_boxer_1", unique=True
     )
     boxer_2 = models.ForeignKey(
-        Boxer,
-        on_delete=models.CASCADE,
-        related_name="match_boxer_2",
+        Boxer, on_delete=models.CASCADE, related_name="match_boxer_2", unique=True
     )
     location = models.CharField(max_length=255, blank=True, null=True)
     total_rounds = models.PositiveSmallIntegerField(default=4)
-    winner = models.ForeignKey(
-        Boxer, on_delete=models.SET_NULL, blank=True, null=True, related_name="wins"
-    )
 
+    winner = models.ForeignKey(
+        Boxer, on_delete=models.SET_NULL, null=True, blank=True, related_name="wins"
+    )
     win_choices = (
         ("KO", "Knockout"),
         ("TKO", "Technical Knockout"),

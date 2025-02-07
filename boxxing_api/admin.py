@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from .forms import MatchForm
 from .models import Boxer, Match, MatchResult
 
 
@@ -13,6 +14,7 @@ class MatchResultAdmin(admin.TabularInline):
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     inline = [MatchResultAdmin]
+    form = MatchForm
 
 
 @admin.register(Boxer)
