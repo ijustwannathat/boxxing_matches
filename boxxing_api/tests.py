@@ -40,13 +40,14 @@ class TestViews(TestCase):
             {
                 "name": "Pitbull",
                 "second_name": "Cool",
-                "age": 56,
-                "weight": 140.0,
-                "height": 190,
+                "age": 556,
+                "weight": 540.0,
+                "height": 590,
                 "fights_won": 15,
                 "fights_lost": 1,
             },
         )
+        print(response)
         self.assertEqual(response.status_code, 201)
 
     def test_failure_post_method(self):

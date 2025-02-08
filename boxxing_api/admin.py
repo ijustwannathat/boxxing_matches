@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .forms import MatchForm
+from .forms import BoxerForm, MatchForm
 from .models import Boxer, Match, MatchResult
 
 
@@ -20,6 +20,7 @@ class MatchAdmin(admin.ModelAdmin):
 @admin.register(Boxer)
 class BoxerAdmin(admin.ModelAdmin):
     list_display = ["name", "second_name", "fights_won", "fights_played"]
+    form = BoxerForm
 
 
 @admin.register(MatchResult)
